@@ -10,7 +10,6 @@
       background: url("https://pic1.imgdb.cn/item/67b488c8d0e0a243d4008f93.png") no-repeat center center;
       background-size: cover;
       text-align: center;
-      color: #fff;
       font-family: sans-serif;
       height: 100vh;
       display: flex;
@@ -54,6 +53,9 @@
     .page {
       display: none;
       width: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
     }
     .active {
       display: flex;
@@ -63,11 +65,13 @@
     }
     h1, h2, h3 {
       margin: 1rem 0;
+      color: #333;
     }
     p {
       margin: 0.5rem 0;
       line-height: 1.6;
       text-align: left;
+      color: #222;
     }
     .blog-list {
       width: 100%;
@@ -75,16 +79,17 @@
       margin: 1rem 0;
     }
     .blog-item {
-      background-color: rgba(0, 0, 0, 0.3);
+      background-color: rgba(0, 0, 0, 0.05);
       margin: 1rem 0;
       padding: 1rem;
-      border: 1px solid #fff;
+      border: 1px solid #ccc;
     }
     .footer {
       width: 100%;
       text-align: center;
       opacity: 0.8;
       padding: 0.5rem 0;
+      color: #333;
     }
   </style>
 </head>
@@ -93,12 +98,11 @@
     <button onclick="showPage('home')">首页</button>
     <button onclick="showPage('about')">关于我</button>
     <button onclick="showPage('blog')">博客列表</button>
-    <button onclick="showPage('postDetail')">博客详情</button>
   </div>
   <div class="page-container">
     <div id="home" class="page active">
-      <h1>欢迎来到Wangjue233的个人博客</h1>
-      <p>在这里，你可以看到我的个人动态、文章分享以及更多内容</p>
+      <h1>欢迎来到 Wangjue233 的个人博客</h1>
+      <p>在这里，你可以看到我的个人动态、文章分享以及更多内容。</p>
     </div>
     <div id="about" class="page">
       <h2>关于我</h2>
@@ -110,7 +114,7 @@
         <div class="blog-item">
           <h3>csp游记</h3>
           <p>csp游记</p>
-          <button onclick="showPage('postDetail')">阅读全文</button>
+          <button onclick="showPostDetail()">阅读全文</button>
         </div>
       </div>
     </div>
@@ -127,36 +131,22 @@
         刷了 n套模拟题，平均分大概185分左右
       </p>
       <p><strong>2024.10.27</strong><br>
-        周五在学校机房熟悉了 NOI Linux 系统，感觉和普通的系统还是很不一样的。感谢老师点的kfc//
+        周五在学校机房熟悉了 NOI Linux 系统，感觉和普通的系统还是很不一样的。感谢老师点的kfchh
       </p>
       <p><strong>2024.10.28</strong><br>
-        复赛在人本，第一次进复赛十分有十二分紧张。进入考场后一考场人都登不上去提交系统，最后考前几分钟终于好了。<br>
+        复赛在人大附中，第一次进复赛十分有十二分紧张。进入考场后一考场人都登不上去提交系统，最后考前几分钟终于好了。<br>
         <br>
         开题<br>
-        打开第一题，一眼望去感觉有点难。最后仔细读了一下突然发现是道签到题，花了40min做完了。（虽然但是，还是没有注意细节）<br>
+        第一题看着难，实际上是签到题，花了40min做完。最后没发现i = j - 1 pts--<br>
         <br>
-        第二题读了半天题以为是搜索但是没有任何思路，去洗手间洗了把脸后发现是个模拟，对着样例调试了大概1.5h后就去开第三题了<br>
+        第二题以为是搜索，实际是模拟，思考 1.5h 后才找到解法。最后因为边界条件没处理好pts--<br>
         <br>
-        最最最离谱的第三题：我刚开题的时候误以为是道数学技巧题（但是实际上也确实是）脑子一热，算出了 100000 / 2 = 50000，调了45min后甚至一度以为秒了T3，但是总感觉有哪里不对。<br>
+        第三题误以为是数学技巧题，结果逻辑有误，调试 45min 后才发现问题。感觉已经要炸<br>
         <br>
-        第四题直接放弃，祈求ccf赠予 5 分。<br>
-        <br>
-        最后30min就在自己造样例然后自测一下，检查一下头文件啥的<br>
-        <br>
-        考场估分100+80+60+5=245 1等奖<br>
-        <br>
-        结果回家自测了一下发现天塌了，后来经过dalao的调试后发现第一题在发现相异后 i = j，但是又 i++ 了。挂40分。<br>
-        第二题没有重置 s数组，没有判边界条件，再挂10分。<br>
-        最惨的第三题。思路完全是错的，再再再挂50分。第四题也没有骗到任何分。<br>
-        <br>
-        最后再感叹一下，人本真大。<br>
-        <br>
-        luogu估分60+70+10+0=140 2等奖<br>
-        原地升天（盲目自信的后果）<br>
-        <br>
-        总结<br>
-        虽然说第一次考复赛成绩还算可以，但是我已经是初中生了，而且比之前模拟赛发挥差了一大截。本来可以考200+的结果因为2个细节痛失至少30pts。还是比赛和平时练习没练够，预计只有2等奖了。最后希望ccf的数据强度弱弱弱弱弱。[Worship]
+        第四题直接放弃，祈求 CCF 赠送 5 分。<br>
       </p>
+      <p><strong>考场估分：</strong>100+80+10+5 = 195 二等奖</p>
+      <p><strong>最终成绩：</strong>140 分，三等奖，盲目自信的后果。</p>
       <button onclick="showPage('blog')">返回博客列表</button>
     </div>
   </div>
@@ -169,6 +159,10 @@
       });
       document.getElementById(pageId).classList.add("active");
       window.scrollTo(0, 0);
+    }
+
+    function showPostDetail(){
+      showPage('postDetail');
     }
   </script>
 </body>
