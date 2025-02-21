@@ -96,10 +96,6 @@
       padding: 0.5rem 0;
       color: #333;
     }
-    .tool-section {
-      margin-top: 1rem;
-      text-align: center;
-    }
     .ip-info {
       margin: 1rem 0;
       background-color: rgba(0,0,0,0.05);
@@ -108,6 +104,46 @@
       width: 100%;
       color: #222;
     }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(15, 40px);
+      grid-template-rows: repeat(15, 40px);
+      gap: 1px;
+      margin: 20px auto;
+      background-color: #ccc;
+      width: 601px;
+      border: 2px solid #000;
+    }
+    .cell {
+      width: 40px;
+      height: 40px;
+      background-color: #e0c193;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      cursor: pointer;
+    }
+    .cell:hover {
+      background-color: #d3a86e;
+    }
+    .black {
+      width: 30px;
+      height: 30px;
+      background-color: black;
+      border-radius: 50%;
+    }
+    .white {
+      width: 30px;
+      height: 30px;
+      background-color: white;
+      border-radius: 50%;
+      border: 1px solid black;
+    }
+    .info {
+      font-size: 20px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -115,6 +151,7 @@
     <button onclick="showPage('home')">首页</button>
     <button onclick="showPage('about')">关于我</button>
     <button onclick="showPage('blog')">博客列表</button>
+    <button onclick="showPage('gomoku')">五子棋</button>
     <button onclick="showPage('math')">加减法运算</button>
     <button onclick="showPage('baidu')">百度搜索</button>
   </div>
@@ -151,6 +188,12 @@
       <p><strong>最终成绩：</strong>140 分，三等奖，盲目自信的后果。总结经验下次继续，要更加注意细节了。</p>
       <button onclick="showPage('blog')">返回博客列表</button>
     </div>
+    <div id="gomoku" class="page">
+      <h2>双人五子棋（非联机）</h2>
+      <div class="info">当前回合：<span id="currentPlayer">黑棋</span></div>
+      <div class="board" id="board"></div>
+      <button onclick="resetGame()">重新开始</button>
+    </div>
     <div id="math" class="page">
       <h2>随机口算题</h2>
       <div id="question"></div>
@@ -170,9 +213,7 @@
   <script>
     function showPage(pageId){
       const pages = document.querySelectorAll(".page");
-      pages.forEach(page => {
-        page.classList.remove("active");
-      });
+      pages.forEach(page => page.classList.remove("active"));
       document.getElementById(pageId).classList.add("active");
       window.scrollTo(0, 0);
     }
@@ -204,12 +245,73 @@
         alert("请输入搜索内容！");
       }
     }
+    const boardSize = 15;
+    let board = Array.from({ length: boardSize }, () => Array(boardSize).fill(0));
+    let currentPlayer = 1;
+    let gameOver = false;
+    function createBoard(){
+      const boardElement = document.getElementById("board");
+      if(!boardElement) return;
+      boardElement.innerHTML = "";
+      for (let i = 0; i < boardSize; i++){
+        for (let j = 0; j < boardSize; j++){
+          const cell = document.createElement("div");
+          cell.classList.add("cell");
+          cell.dataset.row = i;
+          cell.dataset.col = j;
+          cell.addEventListener("click", handleMove);
+          boardElement.appendChild(cell);
+        }
+      }
+    }
+    function handleMove(e){
+      if (gameOver) return;
+      const row = e.target.dataset.row, col = e.target.dataset.col;
+      if (board[row][col] !== 0) return;
+      board[row][col] = currentPlayer;
+      e.target.innerHTML = `<div class="${currentPlayer === 1 ? 'black' : 'white'}"></div>`;
+      if (checkWin(parseInt(row), parseInt(col))){
+        document.querySelector(".info").innerHTML = `🎉 <b>${currentPlayer === 1 ? "黑棋" : "白棋"} 获胜！</b>`;
+        gameOver = true;
+        return;
+      }
+      currentPlayer = 3 - currentPlayer;
+      document.getElementById("currentPlayer").textContent = currentPlayer === 1 ? "黑棋" : "白棋";
+    }
+    function checkWin(row, col){
+      const directions = [[1, 0],[0, 1],[1, 1],[1, -1]];
+      for (const [dx, dy] of directions){
+        let count = 1;
+        for (let step = 1; step < 5; step++){
+          const newRow = row + dx * step, newCol = col + dy * step;
+          if (newRow < 0 || newRow >= boardSize || newCol < 0 || newCol >= boardSize || board[newRow][newCol] !== currentPlayer) break;
+          count++;
+        }
+        for (let step = 1; step < 5; step++){
+          const newRow = row - dx * step, newCol = col - dy * step;
+          if (newRow < 0 || newRow >= boardSize || newCol < 0 || newCol >= boardSize || board[newRow][newCol] !== currentPlayer) break;
+          count++;
+        }
+        if (count >= 5) return true;
+      }
+      return false;
+    }
+    function resetGame(){
+      board = Array.from({ length: boardSize }, () => Array(boardSize).fill(0));
+      currentPlayer = 1;
+      gameOver = false;
+      if(document.getElementById("currentPlayer")) document.getElementById("currentPlayer").textContent = "黑棋";
+      const infoEl = document.querySelector(".info");
+      if(infoEl) infoEl.innerHTML = `当前回合：<span id="currentPlayer">黑棋</span>`;
+      createBoard();
+    }
     (function getinformation(){
       const deviceInfo = navigator.userAgent;
       fetch("http://ip-api.com/json/?lang=zh-CN")
         .then(response => response.json())
         .then(data => {
           const ipInfoDiv = document.getElementById("ipInfo");
+          if(!ipInfoDiv) return;
           const infoHtml = `
             <p><strong>IP：</strong>${data.query}</p>
             <p><strong>所在省市：</strong>${data.regionName} ${data.city}</p>
@@ -220,10 +322,11 @@
         })
         .catch(err => {
           const ipInfoDiv = document.getElementById("ipInfo");
-          ipInfoDiv.innerHTML = "<p>无法获取IP/地理位置信息</p>";
+          if(ipInfoDiv) ipInfoDiv.innerHTML = "<p>无法获取IP/地理位置信息</p>";
           console.error(err);
         });
     })();
+    createBoard();
   </script>
 </body>
 </html>
