@@ -2,7 +2,7 @@
 <html lang="zh-cn">
 <head>
   <meta charset="UTF-8">
-  <title>个人博客</title> 
+  <title>个人博客</title>
   <style>
     body {
       margin: 0;
@@ -27,6 +27,7 @@
       position: fixed;
       top: 0;
       left: 0;
+      z-index: 999;
     }
     .navbar button {
       background: none;
@@ -144,6 +145,50 @@
       font-size: 20px;
       margin-top: 10px;
     }
+    #rpgText {
+      background-color: #0a0a23;
+      color: #ffffff;
+      padding: 10px;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+    }
+    #game {
+      max-width: 500px;
+      background-color: #ffffff;
+      color: #ffffff;
+      margin: 0 auto;
+      padding: 10px;
+      border: 2px solid #0a0a23;
+      border-radius: 10px;
+    }
+    #stats,
+    #controls {
+      border: 1px solid #0a0a23;
+      padding: 5px;
+      color: #0a0a23;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    #monsterStats {
+      display: none;
+      border: 1px solid #0a0a23;
+      padding: 5px;
+      color: #ffffff;
+      background-color: #c70d0d;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    .stat {
+      padding-right: 10px;
+    }
+    #game button {
+      cursor: pointer;
+      color: #0a0a23;
+      background-color: #feac32;
+      background-image: linear-gradient(#fecc4c, #ffac33);
+      border: 3px solid #feac32;
+      margin-right: 6px;
+    }
   </style>
 </head>
 <body>
@@ -154,6 +199,7 @@
     <button onclick="showPage('gomoku')">五子棋</button>
     <button onclick="showPage('math')">加减法运算</button>
     <button onclick="showPage('baidu')">百度搜索</button>
+    <button onclick="showPage('rpg')">RPG游戏</button>
   </div>
   <div class="page-container">
     <div id="home" class="page active">
@@ -180,12 +226,10 @@
     <div id="postDetail" class="page">
       <h2>csp游记</h2>
       <p><strong>2024.08</strong><br>一直在搞初赛，做了n套模拟卷</p>
-      <p><strong>2024.09.21</strong><br>csp j/s的考点都在北大附中，进去以后发现一堆小孩哥。j组打开试卷后发现出奇的简单，本来以为只有单选简单，结果后面的阅读和完善也唐完了。最后1个多小时就做完了全部就睡觉了。预计 91.5 分，实际 88.5 分。<br>s组全称掷橡皮，预计 30 分，最后36 分，稳稳拿下学校s组倒数第一</p>
-      <p><strong>2024.10.20 - 10.26</strong><br>刷了 n套模拟题，平均分大概185分左右</p>
-      <p><strong>2024.10.27</strong><br>周五在学校机房熟悉了 NOI Linux 系统，感觉和普通的系统还是很不一样的。感谢老师点的kfchh</p>
-      <p><strong>2024.10.28</strong><br>复赛在人大附中，第一次进复赛十分有十二分紧张。进入考场后一考场人都登不上去提交系统，最后考前几分钟终于好了。<br><br>开题<br>第一题看着难，实际上是签到题，花了40min做完。最后没发现i = j - 1 pts--<br><br>第二题以为是搜索，实际是模拟，思考 1.5h 后才找到解法。最后因为边界条件没处理好pts--<br><br>第三题误以为是数学技巧题，结果逻辑有误，调试 45min 后才发现问题。感觉已经要炸<br><br>第四题直接放弃，祈求 CCF 赠送 5 分。</p>
-      <p><strong>考场估分：</strong>100+80+10+5 = 195 二等奖</p>
-      <p><strong>最终成绩：</strong>140 分，三等奖，盲目自信的后果。总结经验下次继续，要更加注意细节了。</p>
+      <p><strong>2024.09.21</strong><br>csp j/s的考点都在北大附中...</p>
+      <p><strong>2024.10.20 - 10.26</strong><br>刷了 n套模拟题...</p>
+      <p><strong>2024.10.27</strong><br>周五在学校机房熟悉了 NOI Linux 系统...</p>
+      <p><strong>2024.10.28</strong><br>复赛在人大附中...</p>
       <button onclick="showPage('blog')">返回博客列表</button>
     </div>
     <div id="gomoku" class="page">
@@ -207,6 +251,28 @@
       <input type="text" id="keyword" placeholder="输入搜索内容">
       <button onclick="ds()">搜索</button>
       <button onclick="showPage('home')">返回首页</button>
+    </div>
+    <div id="rpg" class="page">
+      <h2>RPG - Dragon Repeller By Hyn</h2>
+      <div id="game">
+        <div id="stats">
+          <span class="stat">XP: <strong><span id="xpText">0</span></strong></span>
+          <span class="stat">Health: <strong><span id="healthText">100</span></strong></span>
+          <span class="stat">Gold: <strong><span id="goldText">50</span></strong></span>
+        </div>
+        <div id="controls">
+          <button id="button1">Go to store</button>
+          <button id="button2">Go to cave</button>
+          <button id="button3">Fight dragon</button>
+        </div>
+        <div id="monsterStats">
+          <span class="stat">Monster Name: <strong><span id="monsterName"></span></strong></span>
+          <span class="stat">Health: <strong><span id="monsterHealth"></span></strong></span>
+        </div>
+        <div id="rpgText">
+          欢迎来到 Dragon Repeller，你必须打败阻止人们离开镇子的巨龙。你当前在小镇广场。
+        </div>
+      </div>
     </div>
   </div>
   <div class="footer">Made by wangjue233</div>
@@ -271,7 +337,7 @@
       board[row][col] = currentPlayer;
       e.target.innerHTML = `<div class="${currentPlayer === 1 ? 'black' : 'white'}"></div>`;
       if (checkWin(parseInt(row), parseInt(col))){
-        document.querySelector(".info").innerHTML = `🎉 <b>${currentPlayer === 1 ? "黑棋" : "白棋"} 获胜！</b>`;
+        document.querySelector(".info").innerHTML = "🎉 <b>" + (currentPlayer === 1 ? "黑棋" : "白棋") + " 获胜！</b>";
         gameOver = true;
         return;
       }
@@ -283,13 +349,13 @@
       for (const [dx, dy] of directions){
         let count = 1;
         for (let step = 1; step < 5; step++){
-          const newRow = row + dx * step, newCol = col + dy * step;
-          if (newRow < 0 || newRow >= boardSize || newCol < 0 || newCol >= boardSize || board[newRow][newCol] !== currentPlayer) break;
+          const nr = row + dx * step, nc = col + dy * step;
+          if (nr < 0 || nr >= boardSize || nc < 0 || nc >= boardSize || board[nr][nc] !== currentPlayer) break;
           count++;
         }
         for (let step = 1; step < 5; step++){
-          const newRow = row - dx * step, newCol = col - dy * step;
-          if (newRow < 0 || newRow >= boardSize || newCol < 0 || newCol >= boardSize || board[newRow][newCol] !== currentPlayer) break;
+          const nr = row - dx * step, nc = col - dy * step;
+          if (nr < 0 || nr >= boardSize || nc < 0 || nc >= boardSize || board[nr][nc] !== currentPlayer) break;
           count++;
         }
         if (count >= 5) return true;
@@ -300,11 +366,12 @@
       board = Array.from({ length: boardSize }, () => Array(boardSize).fill(0));
       currentPlayer = 1;
       gameOver = false;
-      if(document.getElementById("currentPlayer")) document.getElementById("currentPlayer").textContent = "黑棋";
+      document.getElementById("currentPlayer").textContent = "黑棋";
       const infoEl = document.querySelector(".info");
-      if(infoEl) infoEl.innerHTML = `当前回合：<span id="currentPlayer">黑棋</span>`;
+      if(infoEl) infoEl.innerHTML = "当前回合：<span id=\"currentPlayer\">黑棋</span>";
       createBoard();
     }
+    createBoard();
     (function getinformation(){
       const deviceInfo = navigator.userAgent;
       fetch("http://ip-api.com/json/?lang=zh-CN")
@@ -312,12 +379,7 @@
         .then(data => {
           const ipInfoDiv = document.getElementById("ipInfo");
           if(!ipInfoDiv) return;
-          const infoHtml = `
-            <p><strong>IP：</strong>${data.query}</p>
-            <p><strong>所在省市：</strong>${data.regionName} ${data.city}</p>
-            <p><strong>运营商：</strong>${data.isp}</p>
-            <p><strong>设备信息：</strong>${deviceInfo}</p>
-          `;
+          const infoHtml = "<p><strong>IP：</strong>" + data.query + "</p><p><strong>所在省市：</strong>" + data.regionName + " " + data.city + "</p><p><strong>运营商：</strong>" + data.isp + "</p><p><strong>设备信息：</strong>" + deviceInfo + "</p>";
           ipInfoDiv.innerHTML = infoHtml;
         })
         .catch(err => {
@@ -326,7 +388,208 @@
           console.error(err);
         });
     })();
-    createBoard();
+  </script>
+  <script>
+    let xp = 0;
+    let health = 100;
+    let gold = 50;
+    let currentWeapon = 0;
+    let fighting;
+    let monsterHealth;
+    let inventory = ["stick"];
+    const button1 = document.querySelector("#button1");
+    const button2 = document.querySelector("#button2");
+    const button3 = document.querySelector("#button3");
+    const rpgText = document.querySelector("#rpgText");
+    const xpText = document.querySelector("#xpText");
+    const healthText = document.querySelector("#healthText");
+    const goldText = document.querySelector("#goldText");
+    const monsterStats = document.querySelector("#monsterStats");
+    const monsterName = document.querySelector("#monsterName");
+    const monsterHealthText = document.querySelector("#monsterHealth");
+    const weapons = [{ name: "stick", power: 5 },{ name: "dagger", power: 30 },{ name: "claw hammer", power: 50 },{ name: "sword", power: 100 }];
+    const monsters = [{ name: "slime", level: 2, health: 15 },{ name: "fanged beast", level: 8, health: 60 },{ name: "dragon", level: 20, health: 300 }];
+    const locations = [
+      { name: "town square", "button text": ["Go to store","Go to cave","Fight dragon"], "button functions": [goStore, goCave, fightDragon], text: "You are in the town square. You see a sign that says \"Store\"." },
+      { name: "store", "button text": ["Buy 10 health (10 gold)","Buy weapon (30 gold)","Go to town square"], "button functions": [buyHealth, buyWeapon, goTown], text: "You enter the store." },
+      { name: "cave", "button text": ["Fight slime","Fight fanged beast","Go to town square"], "button functions": [fightSlime, fightBeast, goTown], text: "You enter the cave. You see some monsters." },
+      { name: "fight", "button text": ["Attack","Dodge","Run"], "button functions": [attack, dodge, goTown], text: "You are fighting a monster." },
+      { name: "kill monster", "button text": ["Go to town square","Go to town square","Go to town square"], "button functions": [goTown, goTown, easterEgg], text: "The monster screams \"Arg!\" as it dies. You gain experience points and find gold." },
+      { name: "lose", "button text": ["REPLAY?","REPLAY?","REPLAY?"], "button functions": [restart, restart, restart], text: "You die. &#x2620;" },
+      { name: "win", "button text": ["REPLAY?","REPLAY?","REPLAY?"], "button functions": [restart, restart, restart], text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;" },
+      { name: "easter egg", "button text": ["2","8","Go to town square?"], "button functions": [pickTwo, pickEight, goTown], text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!" }
+    ];
+    button1.onclick = goStore;
+    button2.onclick = goCave;
+    button3.onclick = fightDragon;
+    function update(location){
+      monsterStats.style.display = "none";
+      button1.innerText = location["button text"][0];
+      button2.innerText = location["button text"][1];
+      button3.innerText = location["button text"][2];
+      button1.onclick = location["button functions"][0];
+      button2.onclick = location["button functions"][1];
+      button3.onclick = location["button functions"][2];
+      rpgText.innerHTML = location.text;
+    }
+    function goTown(){
+      update(locations[0]);
+    }
+    function goStore(){
+      update(locations[1]);
+    }
+    function goCave(){
+      update(locations[2]);
+    }
+    function buyHealth(){
+      if (gold >= 10){
+        gold -= 10;
+        health += 10;
+        goldText.innerText = gold;
+        healthText.innerText = health;
+      } else {
+        rpgText.innerText = "You do not have enough gold to buy health.";
+      }
+    }
+    function buyWeapon(){
+      if (currentWeapon < weapons.length - 1){
+        if (gold >= 30){
+          gold -= 30;
+          currentWeapon++;
+          goldText.innerText = gold;
+          let newWeapon = weapons[currentWeapon].name;
+          rpgText.innerText = "You now have a " + newWeapon + ".";
+          inventory.push(newWeapon);
+          rpgText.innerText += " In your inventory you have: " + inventory;
+        } else {
+          rpgText.innerText = "You do not have enough gold to buy a weapon.";
+        }
+      } else {
+        rpgText.innerText = "You already have the most powerful weapon!";
+        button2.innerText = "Sell weapon for 15 gold";
+        button2.onclick = sellWeapon;
+      }
+    }
+    function sellWeapon(){
+      if (inventory.length > 1){
+        gold += 15;
+        goldText.innerText = gold;
+        let cWeapon = inventory.shift();
+        rpgText.innerText = "You sold a " + cWeapon + ".";
+        rpgText.innerText += " In your inventory you have: " + inventory;
+        currentWeapon--;
+      } else {
+        rpgText.innerText = "Don't sell your only weapon!";
+      }
+    }
+    function fightSlime(){
+      fighting = 0;
+      goFight();
+    }
+    function fightBeast(){
+      fighting = 1;
+      goFight();
+    }
+    function fightDragon(){
+      fighting = 2;
+      goFight();
+    }
+    function goFight(){
+      update(locations[3]);
+      monsterHealth = monsters[fighting].health;
+      monsterStats.style.display = "block";
+      monsterName.innerText = monsters[fighting].name;
+      monsterHealthText.innerText = monsterHealth;
+    }
+    function attack(){
+      rpgText.innerText = "The " + monsters[fighting].name + " attacks. You attack it with your " + weapons[currentWeapon].name + ".";
+      health -= getMonsterAttackValue(monsters[fighting].level);
+      if (isMonsterHit()){
+        monsterHealth -= weapons[currentWeapon].power + Math.floor(Math.random() * xp) + 1;
+      } else {
+        rpgText.innerText += " You miss.";
+      }
+      healthText.innerText = health;
+      monsterHealthText.innerText = monsterHealth;
+      if (health <= 0){
+        lose();
+      } else if (monsterHealth <= 0){
+        if (fighting === 2){
+          winGame();
+        } else {
+          defeatMonster();
+        }
+      }
+      if (Math.random() <= 0.1 && inventory.length !== 1){
+        rpgText.innerText += " Your " + inventory.pop() + " breaks.";
+        currentWeapon--;
+      }
+    }
+    function getMonsterAttackValue(level){
+      const hit = (level * 5) - (Math.floor(Math.random() * xp));
+      return hit > 0 ? hit : 0;
+    }
+    function isMonsterHit(){
+      return Math.random() > 0.2 || health < 20;
+    }
+    function dodge(){
+      rpgText.innerText = "You dodge the attack from the " + monsters[fighting].name + ".";
+    }
+    function defeatMonster(){
+      gold += Math.floor(monsters[fighting].level * 6.7);
+      xp += monsters[fighting].level;
+      goldText.innerText = gold;
+      xpText.innerText = xp;
+      update(locations[4]);
+    }
+    function lose(){
+      update(locations[5]);
+    }
+    function winGame(){
+      update(locations[6]);
+    }
+    function restart(){
+      xp = 0;
+      health = 100;
+      gold = 50;
+      currentWeapon = 0;
+      inventory = ["stick"];
+      goldText.innerText = gold;
+      healthText.innerText = health;
+      xpText.innerText = xp;
+      goTown();
+    }
+    function easterEgg(){
+      update(locations[7]);
+    }
+    function pickTwo(){
+      pick(2);
+    }
+    function pickEight(){
+      pick(8);
+    }
+    function pick(guess){
+      const numbers = [];
+      while (numbers.length < 10){
+        numbers.push(Math.floor(Math.random() * 11));
+      }
+      rpgText.innerText = "You picked " + guess + ". Here are the random numbers:\n";
+      for (let i = 0; i < 10; i++){
+        rpgText.innerText += numbers[i] + "\n";
+      }
+      if (numbers.includes(guess)){
+        rpgText.innerText += "Right! You win 20 gold!";
+        gold += 20;
+        goldText.innerText = gold;
+      } else {
+        rpgText.innerText += "Wrong! You lose 10 health!";
+        health -= 10;
+        healthText.innerText = health;
+        if (health <= 0){
+          lose();
+        }
+      }
+    }
   </script>
 </body>
 </html>
