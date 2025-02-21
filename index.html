@@ -2,7 +2,7 @@
 <html lang="zh-cn">
 <head>
   <meta charset="UTF-8">
-  <title>我的个人博客</title>
+  <title>我的个人博客 + 工具</title>
   <style>
     body {
       margin: 0;
@@ -56,6 +56,7 @@
       background-color: rgba(255, 255, 255, 0.9);
       padding: 20px;
       border-radius: 10px;
+      box-sizing: border-box;
     }
     .active {
       display: flex;
@@ -84,12 +85,28 @@
       padding: 1rem;
       border: 1px solid #ccc;
     }
+    button, input {
+      font-size: 1rem;
+      margin: 0.5rem;
+    }
     .footer {
       width: 100%;
       text-align: center;
       opacity: 0.8;
       padding: 0.5rem 0;
       color: #333;
+    }
+    .tool-section {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .ip-info {
+      margin: 1rem 0;
+      background-color: rgba(0,0,0,0.05);
+      padding: 1rem;
+      border: 1px solid #ccc;
+      width: 100%;
+      color: #222;
     }
   </style>
 </head>
@@ -98,11 +115,16 @@
     <button onclick="showPage('home')">首页</button>
     <button onclick="showPage('about')">关于我</button>
     <button onclick="showPage('blog')">博客列表</button>
+    <button onclick="showPage('math')">加减法运算</button>
+    <button onclick="showPage('baidu')">百度搜索</button>
   </div>
   <div class="page-container">
     <div id="home" class="page active">
       <h1>欢迎来到 Wangjue233 的个人博客</h1>
       <p>在这里，你可以看到我的个人动态、文章分享以及更多内容。</p>
+      <div id="ipInfo" class="ip-info">
+        <p>正在获取您的位置信息...</p>
+      </div>
     </div>
     <div id="about" class="page">
       <h2>关于我</h2>
@@ -120,34 +142,28 @@
     </div>
     <div id="postDetail" class="page">
       <h2>csp游记</h2>
-      <p><strong>2024.08</strong><br>
-        一直在搞初赛，做了n套模拟卷
-      </p>
-      <p><strong>2024.09.21</strong><br>
-        csp j/s的考点都在北大附中，进去以后发现一堆小孩哥。j组打开试卷后发现出奇的简单，本来以为只有单选简单，结果后面的阅读和完善也唐完了。最后1个多小时就做完了全部就睡觉了。预计 91.5 分，实际 88.5 分。<br>
-        s组全称掷橡皮，预计 30 分，最后36 分，稳稳拿下学校s组倒数第一
-      </p>
-      <p><strong>2024.10.20 - 10.26</strong><br>
-        刷了 n套模拟题，平均分大概185分左右
-      </p>
-      <p><strong>2024.10.27</strong><br>
-        周五在学校机房熟悉了 NOI Linux 系统，感觉和普通的系统还是很不一样的。感谢老师点的kfchh
-      </p>
-      <p><strong>2024.10.28</strong><br>
-        复赛在人大附中，第一次进复赛十分有十二分紧张。进入考场后一考场人都登不上去提交系统，最后考前几分钟终于好了。<br>
-        <br>
-        开题<br>
-        第一题看着难，实际上是签到题，花了40min做完。最后没发现i = j - 1 pts--<br>
-        <br>
-        第二题以为是搜索，实际是模拟，思考 1.5h 后才找到解法。最后因为边界条件没处理好pts--<br>
-        <br>
-        第三题误以为是数学技巧题，结果逻辑有误，调试 45min 后才发现问题。感觉已经要炸<br>
-        <br>
-        第四题直接放弃，祈求 CCF 赠送 5 分。<br>
-      </p>
+      <p><strong>2024.08</strong><br>一直在搞初赛，做了n套模拟卷</p>
+      <p><strong>2024.09.21</strong><br>csp j/s的考点都在北大附中，进去以后发现一堆小孩哥。j组打开试卷后发现出奇的简单，本来以为只有单选简单，结果后面的阅读和完善也唐完了。最后1个多小时就做完了全部就睡觉了。预计 91.5 分，实际 88.5 分。<br>s组全称掷橡皮，预计 30 分，最后36 分，稳稳拿下学校s组倒数第一</p>
+      <p><strong>2024.10.20 - 10.26</strong><br>刷了 n套模拟题，平均分大概185分左右</p>
+      <p><strong>2024.10.27</strong><br>周五在学校机房熟悉了 NOI Linux 系统，感觉和普通的系统还是很不一样的。感谢老师点的kfchh</p>
+      <p><strong>2024.10.28</strong><br>复赛在人大附中，第一次进复赛十分有十二分紧张。进入考场后一考场人都登不上去提交系统，最后考前几分钟终于好了。<br><br>开题<br>第一题看着难，实际上是签到题，花了40min做完。最后没发现i = j - 1 pts--<br><br>第二题以为是搜索，实际是模拟，思考 1.5h 后才找到解法。最后因为边界条件没处理好pts--<br><br>第三题误以为是数学技巧题，结果逻辑有误，调试 45min 后才发现问题。感觉已经要炸<br><br>第四题直接放弃，祈求 CCF 赠送 5 分。</p>
       <p><strong>考场估分：</strong>100+80+10+5 = 195 二等奖</p>
       <p><strong>最终成绩：</strong>140 分，三等奖，盲目自信的后果。总结经验下次继续，要更加注意细节了。</p>
       <button onclick="showPage('blog')">返回博客列表</button>
+    </div>
+    <div id="math" class="page">
+      <h2>随机口算题</h2>
+      <div id="question"></div>
+      <input type="number" id="uans" placeholder="请输入答案">
+      <button onclick="checkAnswer()">提交答案</button>
+      <p id="result"></p>
+      <button onclick="showPage('home')">返回首页</button>
+    </div>
+    <div id="baidu" class="page">
+      <h2>百度搜索</h2>
+      <input type="text" id="keyword" placeholder="输入搜索内容">
+      <button onclick="ds()">搜索</button>
+      <button onclick="showPage('home')">返回首页</button>
     </div>
   </div>
   <div class="footer">Made by wangjue233</div>
@@ -160,10 +176,54 @@
       document.getElementById(pageId).classList.add("active");
       window.scrollTo(0, 0);
     }
-
     function showPostDetail(){
       showPage('postDetail');
     }
+    let number1, number2, op, ans;
+    function checkAnswer(){
+      const uans = parseInt(document.getElementById("uans").value, 10);
+      const resultText = (uans === ans) ? "恭喜你答对了！" : "回答错误，正确答案是：" + ans + "。";
+      document.getElementById("result").innerText = resultText;
+    }
+    function showPageWithMath(){
+      showPage('math');
+      number1 = Math.floor(Math.random() * 1000);
+      number2 = Math.floor(Math.random() * 1000);
+      op = Math.random() < 0.5 ? '+' : '-';
+      ans = (op === '+') ? (number1 + number2) : (number1 - number2);
+      document.getElementById("question").innerText = number1 + " " + op + " " + number2 + " = ?";
+      document.getElementById("result").innerText = "";
+      document.getElementById("uans").value = "";
+    }
+    document.querySelector('button[onclick="showPage(\'math\')"]').onclick = showPageWithMath;
+    function ds(){
+      const kw = document.getElementById("keyword").value.trim();
+      if (kw){
+        window.location.href = "https://www.baidu.com/s?wd=" + encodeURIComponent(kw);
+      } else {
+        alert("请输入搜索内容！");
+      }
+    }
+    (function getinformation(){
+      const deviceInfo = navigator.userAgent;
+      fetch("http://ip-api.com/json/?lang=zh-CN")
+        .then(response => response.json())
+        .then(data => {
+          const ipInfoDiv = document.getElementById("ipInfo");
+          const infoHtml = `
+            <p><strong>IP：</strong>${data.query}</p>
+            <p><strong>所在省市：</strong>${data.regionName} ${data.city}</p>
+            <p><strong>运营商：</strong>${data.isp}</p>
+            <p><strong>设备信息：</strong>${deviceInfo}</p>
+          `;
+          ipInfoDiv.innerHTML = infoHtml;
+        })
+        .catch(err => {
+          const ipInfoDiv = document.getElementById("ipInfo");
+          ipInfoDiv.innerHTML = "<p>无法获取IP/地理位置信息</p>";
+          console.error(err);
+        });
+    })();
   </script>
 </body>
 </html>
