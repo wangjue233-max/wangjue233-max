@@ -200,6 +200,7 @@
     <button onclick="showPage('math')">加减法运算</button>
     <button onclick="showPage('baidu')">百度搜索</button>
     <button onclick="showPage('rpg')">RPG游戏</button>
+    <button onclick="showPage('fakeAi')">AI</button>
   </div>
   <div class="page-container">
     <div id="home" class="page active">
@@ -273,6 +274,14 @@
           欢迎来到 Dragon Repeller，你必须打败阻止人们离开镇子的巨龙。你当前在小镇广场。
         </div>
       </div>
+    </div>
+    <div id="fakeAi" class="page">
+      <h2>AI</h2>
+      <div id="fakeAiLog" 
+           style="width: 100%; min-height: 150px; max-height: 300px; overflow-y: auto; background-color: rgba(255,255,255,0.7); margin-bottom:1rem; padding: 10px; border-radius: 5px; box-sizing: border-box;">
+      </div>
+      <input type="text" id="fakeAiInput" placeholder="在此输入问题..." style="width:70%; height:2rem; font-size:1rem;">
+      <button onclick="askFakeAi()" style="height:2.4rem;">发送</button>
     </div>
   </div>
   <div class="footer">Made by wangjue233</div>
@@ -407,17 +416,66 @@
     const monsterStats = document.querySelector("#monsterStats");
     const monsterName = document.querySelector("#monsterName");
     const monsterHealthText = document.querySelector("#monsterHealth");
-    const weapons = [{ name: "stick", power: 5 },{ name: "dagger", power: 30 },{ name: "claw hammer", power: 50 },{ name: "sword", power: 100 }];
-    const monsters = [{ name: "slime", level: 2, health: 15 },{ name: "fanged beast", level: 8, health: 60 },{ name: "dragon", level: 20, health: 300 }];
+    const weapons = [
+      { name: "stick", power: 5 },
+      { name: "dagger", power: 30 },
+      { name: "claw hammer", power: 50 },
+      { name: "sword", power: 100 }
+    ];
+    const monsters = [
+      { name: "slime",       level: 2,  health: 15  },
+      { name: "fanged beast",level: 8,  health: 60  },
+      { name: "dragon",      level: 20, health: 300 }
+    ];
     const locations = [
-      { name: "town square", "button text": ["Go to store","Go to cave","Fight dragon"], "button functions": [goStore, goCave, fightDragon], text: "You are in the town square. You see a sign that says \"Store\"." },
-      { name: "store", "button text": ["Buy 10 health (10 gold)","Buy weapon (30 gold)","Go to town square"], "button functions": [buyHealth, buyWeapon, goTown], text: "You enter the store." },
-      { name: "cave", "button text": ["Fight slime","Fight fanged beast","Go to town square"], "button functions": [fightSlime, fightBeast, goTown], text: "You enter the cave. You see some monsters." },
-      { name: "fight", "button text": ["Attack","Dodge","Run"], "button functions": [attack, dodge, goTown], text: "You are fighting a monster." },
-      { name: "kill monster", "button text": ["Go to town square","Go to town square","Go to town square"], "button functions": [goTown, goTown, easterEgg], text: "The monster screams \"Arg!\" as it dies. You gain experience points and find gold." },
-      { name: "lose", "button text": ["REPLAY?","REPLAY?","REPLAY?"], "button functions": [restart, restart, restart], text: "You die. &#x2620;" },
-      { name: "win", "button text": ["REPLAY?","REPLAY?","REPLAY?"], "button functions": [restart, restart, restart], text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;" },
-      { name: "easter egg", "button text": ["2","8","Go to town square?"], "button functions": [pickTwo, pickEight, goTown], text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!" }
+      {
+        name: "town square",
+        "button text": ["Go to store","Go to cave","Fight dragon"],
+        "button functions": [goStore, goCave, fightDragon],
+        text: "You are in the town square. You see a sign that says \"Store\"."
+      },
+      {
+        name: "store",
+        "button text": ["Buy 10 health (10 gold)","Buy weapon (30 gold)","Go to town square"],
+        "button functions": [buyHealth, buyWeapon, goTown],
+        text: "You enter the store."
+      },
+      {
+        name: "cave",
+        "button text": ["Fight slime","Fight fanged beast","Go to town square"],
+        "button functions": [fightSlime, fightBeast, goTown],
+        text: "You enter the cave. You see some monsters."
+      },
+      {
+        name: "fight",
+        "button text": ["Attack","Dodge","Run"],
+        "button functions": [attack, dodge, goTown],
+        text: "You are fighting a monster."
+      },
+      {
+        name: "kill monster",
+        "button text": ["Go to town square","Go to town square","Go to town square"],
+        "button functions": [goTown, goTown, easterEgg],
+        text: "The monster screams \"Arg!\" as it dies. You gain experience points and find gold."
+      },
+      {
+        name: "lose",
+        "button text": ["REPLAY?","REPLAY?","REPLAY?"],
+        "button functions": [restart, restart, restart],
+        text: "You die. &#x2620;"
+      },
+      {
+        name: "win",
+        "button text": ["REPLAY?","REPLAY?","REPLAY?"],
+        "button functions": [restart, restart, restart],
+        text: "You defeat the dragon! YOU WIN THE GAME! &#x1F389;"
+      },
+      {
+        name: "easter egg",
+        "button text": ["2","8","Go to town square?"],
+        "button functions": [pickTwo, pickEight, goTown],
+        text: "You find a secret game. Pick a number above. Ten numbers will be randomly chosen between 0 and 10. If the number you choose matches one of the random numbers, you win!"
+      }
     ];
     button1.onclick = goStore;
     button2.onclick = goCave;
@@ -589,6 +647,50 @@
           lose();
         }
       }
+    }
+  </script>
+  <script>
+    function askFakeAi(){
+      const input = document.getElementById("fakeAiInput");
+      const userMsg = input.value.trim();
+      if(!userMsg){
+        alert("请输入您的问题！");
+        return;
+      }
+      appendFakeAiLog("user", userMsg);
+      const delay = 2000 + Math.floor(Math.random() * 2000);
+      appendFakeAiLog("assistant", "（思考中...）");
+      setTimeout(() => {
+        const logContainer = document.getElementById("fakeAiLog");
+        if(!logContainer) return;
+        const msgs = logContainer.querySelectorAll("div");
+        const lastMsg = msgs[msgs.length - 1];
+        if(lastMsg) {
+          lastMsg.style.color = "red";
+          if(["1034","1133","0135"].includes(userMsg)) {
+            lastMsg.innerHTML = "<strong>AI：</strong> 支持。";
+          } else {
+            lastMsg.innerHTML = "<strong>AI：</strong> 服务器繁忙，请稍后再试";
+          }
+        }
+      }, delay);
+      input.value = "";
+    }
+    function appendFakeAiLog(role, text){
+      const logContainer = document.getElementById("fakeAiLog");
+      if(!logContainer) return;
+      const msgDiv = document.createElement("div");
+      msgDiv.style.margin = "0.5rem 0";
+      msgDiv.style.textAlign = "left";
+      if(role === "user"){
+        msgDiv.style.color = "#000";
+        msgDiv.innerHTML = "<strong>我：</strong> " + text;
+      } else {
+        msgDiv.style.color = "red";
+        msgDiv.innerHTML = "<strong>AI：</strong> " + text;
+      }
+      logContainer.appendChild(msgDiv);
+      logContainer.scrollTop = logContainer.scrollHeight;
     }
   </script>
 </body>
