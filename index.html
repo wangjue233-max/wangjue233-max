@@ -674,7 +674,7 @@
         const lastMsg = msgs[msgs.length - 1];
         if(!lastMsg) return;
         lastMsg.style.color = "red";
-        if(["1034","1133","0135"].includes(userMsg)){
+        if(["1034","1133","0135", "0821", "0420"].includes(userMsg)){
           lastMsg.innerHTML = "<strong>AI：</strong> 支持。";
         } else if(isMathExpression(userMsg)){
           try {
