@@ -200,7 +200,7 @@
     <button onclick="showPage('math')">加减法运算</button>
     <button onclick="showPage('baidu')">百度搜索</button>
     <button onclick="showPage('rpg')">RPG游戏</button>
-    <button onclick="showPage('fakeAi')">AI</button>
+    <button onclick="showPage('Ai')">AI</button>
   </div>
   <div class="page-container">
     <div id="home" class="page active">
@@ -275,12 +275,11 @@
         </div>
       </div>
     </div>
-    <div id="fakeAi" class="page">
+    <div id="Ai" class="page">
       <h2>AI</h2>
-      <div id="fakeAiLog" 
-           style="width: 100%; min-height: 150px; max-height: 300px; overflow-y: auto; background-color: rgba(255,255,255,0.7); margin-bottom:1rem; padding: 10px; border-radius: 5px; box-sizing: border-box;">
+      <div id="AiLog" style="width: 100%; min-height: 150px; max-height: 300px; overflow-y: auto; background-color: rgba(255,255,255,0.7); margin-bottom:1rem; padding: 10px; border-radius: 5px; box-sizing: border-box;">
       </div>
-      <input type="text" id="fakeAiInput" placeholder="在此输入问题..." style="width:70%; height:2rem; font-size:1rem;">
+      <input type="text" id="AiInput" placeholder="在此输入问题..." style="width:70%; height:2rem; font-size:1rem;">
       <button onclick="askFakeAi()" style="height:2.4rem;">发送</button>
     </div>
   </div>
@@ -344,7 +343,7 @@
       const row = e.target.dataset.row, col = e.target.dataset.col;
       if (board[row][col] !== 0) return;
       board[row][col] = currentPlayer;
-      e.target.innerHTML = `<div class="${currentPlayer === 1 ? 'black' : 'white'}"></div>`;
+      e.target.innerHTML = `<div class=\"${currentPlayer === 1 ? 'black' : 'white'}\"></div>`;
       if (checkWin(parseInt(row), parseInt(col))){
         document.querySelector(".info").innerHTML = "🎉 <b>" + (currentPlayer === 1 ? "黑棋" : "白棋") + " 获胜！</b>";
         gameOver = true;
@@ -423,9 +422,9 @@
       { name: "sword", power: 100 }
     ];
     const monsters = [
-      { name: "slime",       level: 2,  health: 15  },
-      { name: "fanged beast",level: 8,  health: 60  },
-      { name: "dragon",      level: 20, health: 300 }
+      { name: "slime", level: 2, health: 15 },
+      { name: "fanged beast", level: 8, health: 60 },
+      { name: "dragon", level: 20, health: 300 }
     ];
     const locations = [
       {
@@ -650,8 +649,16 @@
     }
   </script>
   <script>
+    function isMathExpression(str){
+      const validPattern = /^[\d+\-*/()\s]+$/;
+      if (!validPattern.test(str)){
+        return false;
+      }
+      const hasOperator = /[+\-*/]/.test(str);
+      return hasOperator;
+    }
     function askFakeAi(){
-      const input = document.getElementById("fakeAiInput");
+      const input = document.getElementById("AiInput");
       const userMsg = input.value.trim();
       if(!userMsg){
         alert("请输入您的问题！");
@@ -661,23 +668,29 @@
       const delay = 2000 + Math.floor(Math.random() * 2000);
       appendFakeAiLog("assistant", "（思考中...）");
       setTimeout(() => {
-        const logContainer = document.getElementById("fakeAiLog");
+        const logContainer = document.getElementById("AiLog");
         if(!logContainer) return;
         const msgs = logContainer.querySelectorAll("div");
         const lastMsg = msgs[msgs.length - 1];
-        if(lastMsg) {
-          lastMsg.style.color = "red";
-          if(["1034","1133","0135"].includes(userMsg)) {
-            lastMsg.innerHTML = "<strong>AI：</strong> 支持。";
-          } else {
-            lastMsg.innerHTML = "<strong>AI：</strong> 服务器繁忙，请稍后再试";
+        if(!lastMsg) return;
+        lastMsg.style.color = "red";
+        if(["1034","1133","0135"].includes(userMsg)){
+          lastMsg.innerHTML = "<strong>AI：</strong> 支持。";
+        } else if(isMathExpression(userMsg)){
+          try {
+            const result = eval(userMsg);
+            lastMsg.innerHTML = "<strong>AI：</strong> 计算结果：" + result;
+          } catch(e){
+            lastMsg.innerHTML = "<strong>AI：</strong> 服务器繁忙，请稍后再试。";
           }
+        } else {
+          lastMsg.innerHTML = "<strong>AI：</strong> 服务器繁忙，请稍后再试。";
         }
       }, delay);
       input.value = "";
     }
     function appendFakeAiLog(role, text){
-      const logContainer = document.getElementById("fakeAiLog");
+      const logContainer = document.getElementById("AiLog");
       if(!logContainer) return;
       const msgDiv = document.createElement("div");
       msgDiv.style.margin = "0.5rem 0";
